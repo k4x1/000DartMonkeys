@@ -24,6 +24,7 @@ public class Turret : Tower
             if (m_InstanceTarget != null) { 
              Attack();
             }
+            m_fShootTimerSeconds_current = m_fShootTimerSeconds_max;
         }
         else
         {
