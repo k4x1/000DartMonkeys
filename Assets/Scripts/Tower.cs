@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class Tower : City
 {
-    public int Price;
-    public int UpgradeCost;
-    public int Level;
+
+   
+
+    public int m_Price;
+    public int m_UpgradeCost;
+    public int m_Level;
+
 
     public void Placed(){
         //runs when object is placed
