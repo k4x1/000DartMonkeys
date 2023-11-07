@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -32,7 +33,7 @@ public class BasePlant : IPlantDecorator
      public float GetfBattleSpeed
      {
         get{ 
-        return BattleSpeed;
+            return BattleSpeed;
         }
      }
 
@@ -65,12 +66,46 @@ public abstract class PlantUpgrade : IPlantDecorator
         }
     }
 }
+public class DamageUpgrade : PlantUpgrade
+{
+    int Damage = 2;
+    public override int GetiDamage
+    {
+        get
+        {
+            return m_PlantDecorator.GetiDamage + Damage;
+        }
+    }
+}
+public class HealthUpgrade : PlantUpgrade
+{
+    int Health = 2;
+    public override int GetiHealth
+    {
+        get
+        {
+            return m_PlantDecorator.GetiHealth + Health;
+        }
+    }
+}
+public class BattleSpeedUpgrade : PlantUpgrade
+{
+    float BattleSpeed = 2.0f;
+    public override float GetfBattleSpeed
+    {
+        get
+        {
+            return m_PlantDecorator.GetfBattleSpeed + BattleSpeed;
+        }
+    }
+}
+
 public class Plant : MonoBehaviour 
 {
 
     [SerializeField]
     public float m_fBattleTimerSeconds_max = 1.0f;
-    float m_fBattleTimerSeconds_current = 0.0f;
+    public float m_fBattleTimerSeconds_current = 0.0f;
     public int m_iTroopHealth;
     public int m_iTroopDamage;
     public int m_iTroopPos;
@@ -90,6 +125,7 @@ public class Plant : MonoBehaviour
         {
             BattleEnemy();
             m_fBattleTimerSeconds_current = m_fBattleTimerSeconds_max;
+            
         }
         else
         {
@@ -101,18 +137,24 @@ public class Plant : MonoBehaviour
         GameObject[] enemies;
         enemies = GameObject.FindGameObjectsWithTag("Enemy");
         Vector3 pos = transform.position;
-        Vector3 range = new Vector3(30, 30);
+        Vector3 range = new Vector3(2, 2);
         bool EnemyFound = false;
         foreach (GameObject enemy in enemies)
         {
             Vector3 enemyPos = enemy.transform.position;
-            if (enemyPos.x>(pos+range).x && (pos + range).x<enemyPos.x)
+        
+         
+            if (enemyPos.x > pos.x-range.x && enemyPos.x < pos.x + range.x)
             {
-                if (enemyPos.y > (pos + range).y && (pos + range).y < enemyPos.y)
+                if (enemyPos.y > pos.y - range.y && enemyPos.y < pos.y + range.y)
                 {
                     enemy.GetComponent<Balloon>().m_Health -= m_iTroopDamage;
                     m_iTroopHealth -= enemy.GetComponent<Balloon>().m_Damage;
                     EnemyFound = true;
+                    if(m_iTroopHealth <= 0)
+                    {
+                        Destroy(gameObject);
+                    }
                 }
             }
         }

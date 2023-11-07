@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tower : City
+public class Tower : MonoBehaviour
 {
 
    
