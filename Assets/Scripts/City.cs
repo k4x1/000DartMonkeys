@@ -23,6 +23,7 @@ public class City : MonoBehaviour
       
     }
 
+    // increases income per round
     void UpgradeCity(){
         CityLevel++;
     }
