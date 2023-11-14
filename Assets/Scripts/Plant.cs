@@ -6,40 +6,38 @@ using UnityEngine;
 
 public interface IPlantDecorator
 {
-    int iDamageGet { get; }
-    int iHealthGet { get; }
-    float fBattleSpeedGet { get; }
+    int GetiDamage { get; }
+    int GetiHealth { get; }
+    float GetfBattleSpeed { get; }
+    // void Decorate(Plant plant);
 }
-
 public class BasePlant : IPlantDecorator
 {
-    int iHealth = 10;
-    int iDamage = 1;
-    float fBattleSpeed = 1;
-    public int iDamageGet
+    int Health = 10;
+    int Damage = 1;
+    float BattleSpeed = 1;
+    public int GetiDamage
     {
         get
-        {
-            return iDamage;
+        { 
+            return Damage;
         }
     }
-    public int iHealthGet
-    {
+     public int GetiHealth
+     {
         get
         {
-            return iHealth;
+            return Health;
         }
-    }
-    public float fBattleSpeedGet
-    {
-        get
-        {
-            return fBattleSpeed;
+     }
+     public float GetfBattleSpeed
+     {
+        get{ 
+            return BattleSpeed;
         }
-    }
+     }
 
 }
-
 public abstract class PlantUpgrade : IPlantDecorator
 {
     public IPlantDecorator m_PlantDecorator;
@@ -47,66 +45,62 @@ public abstract class PlantUpgrade : IPlantDecorator
     {
         m_PlantDecorator = _newPlantDecorator;
     }
-    public virtual int iDamageGet
+    public virtual int GetiDamage
     {
         get
         {
-            return m_PlantDecorator.iDamageGet;
+            return m_PlantDecorator.GetiDamage;
         }
     }
-    public virtual int iHealthGet
+    public virtual int GetiHealth
     {
         get
         {
-            return iHealthGet;
+            return GetiHealth ;
         }
     }
-    public virtual float fBattleSpeedGet
+    public virtual float GetfBattleSpeed
     {
-        get
-        {
-            return fBattleSpeedGet;
+        get{
+            return GetfBattleSpeed;
         }
     }
 }
-
 public class DamageUpgrade : PlantUpgrade
 {
-    int iDamage = 2;
-    public override int iDamageGet
+    int Damage = 2;
+    public override int GetiDamage
     {
         get
         {
-            return m_PlantDecorator.iDamageGet + iDamage;
+            return m_PlantDecorator.GetiDamage + Damage;
         }
     }
 }
-
 public class HealthUpgrade : PlantUpgrade
 {
-    int iHealth = 2;
-    public override int iHealthGet
+    int Health = 2;
+    public override int GetiHealth
     {
         get
         {
-            return m_PlantDecorator.iHealthGet + iHealth;
+            return m_PlantDecorator.GetiHealth + Health;
         }
     }
 }
-
 public class BattleSpeedUpgrade : PlantUpgrade
 {
-    float fBattleSpeed = 2.0f;
-    public override float fBattleSpeedGet
+    float BattleSpeed = 2.0f;
+    public override float GetfBattleSpeed
     {
         get
         {
-            return m_PlantDecorator.fBattleSpeedGet + fBattleSpeed;
+            return m_PlantDecorator.GetfBattleSpeed + BattleSpeed;
         }
     }
 }
 
-public class Plant : MonoBehaviour
+public class Plant : MonoBehaviour 
 {
 
     [SerializeField]
@@ -118,8 +112,8 @@ public class Plant : MonoBehaviour
     public int m_iTroopCount;
     [SerializeField]
 
-
-    IPlantDecorator m_PlantDecorator = new BasePlant();
+    
+   IPlantDecorator m_PlantDecorator = new BasePlant();
 
     void Start()
     {
@@ -131,7 +125,7 @@ public class Plant : MonoBehaviour
         {
             BattleEnemy();
             m_fBattleTimerSeconds_current = m_fBattleTimerSeconds_max;
-
+            
         }
         else
         {
@@ -140,24 +134,24 @@ public class Plant : MonoBehaviour
     }
     public void BattleEnemy()
     {
-        GameObject[] aEnemies;
-        aEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-        Vector3 vPos = transform.position;
-        Vector3 vRange = new Vector3(2, 2);
-        bool bEnemyFound = false;
-        foreach (GameObject oEnemy in aEnemies)
+        GameObject[] enemies;
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        Vector3 pos = transform.position;
+        Vector3 range = new Vector3(2, 2);
+     
+        foreach (GameObject enemy in enemies)
         {
-            Vector3 vEnemyPos = oEnemy.transform.position;
-
-
-            if (vEnemyPos.x > vPos.x - vRange.x && vEnemyPos.x < vPos.x + vRange.x)
+            Vector3 enemyPos = enemy.transform.position;
+        
+         
+            if (enemyPos.x > pos.x-range.x && enemyPos.x < pos.x + range.x)
             {
-                if (vEnemyPos.y > vPos.y - vRange.y && vEnemyPos.y < vPos.y + vRange.y)
+                if (enemyPos.y > pos.y - range.y && enemyPos.y < pos.y + range.y)
                 {
-                    oEnemy.GetComponent<Balloon>().m_Health -= m_iTroopDamage;
-                    m_iTroopHealth -= oEnemy.GetComponent<Balloon>().m_Damage;
-                    bEnemyFound = true;
-                    if (m_iTroopHealth <= 0)
+                    enemy.GetComponent<Balloon>().m_Health -= m_iTroopDamage;
+                    m_iTroopHealth -= enemy.GetComponent<Balloon>().m_Damage;
+         
+                    if(m_iTroopHealth <= 0)
                     {
                         Destroy(gameObject);
                     }
