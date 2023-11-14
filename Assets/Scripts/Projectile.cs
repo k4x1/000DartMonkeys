@@ -30,6 +30,34 @@ public class Projectile : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+
+
+        GameObject[] enemies;
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        Vector3 pos = transform.position;
+        Vector3 range = new Vector3(1, 1);
+
+        foreach (GameObject enemy in enemies)
+        {
+            Vector3 enemyPos = enemy.transform.position;
+
+
+            if (enemyPos.x > pos.x - range.x && enemyPos.x < pos.x + range.x)
+            {
+                if (enemyPos.y > pos.y - range.y && enemyPos.y < pos.y + range.y)
+                {
+
+                    enemy.GetComponent<Balloon>().m_Health -= (int)m_fDamage;
+
+
+
+                    Destroy(gameObject);
+
+                }
+            }
+        }
     }
+
 }
  

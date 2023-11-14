@@ -11,7 +11,7 @@ public class Turret : Tower
     public int m_Damage = 1;
     public int m_AttackSpeed = 1;
     public Vector3 m_ProjVelocity = new Vector3(1.0f, 0.0f, 0.0f);
-    public float m_Range = 600.0f;
+    public float m_Range = 100.0f;
     [SerializeField]
     public GameObject m_PrefabProjectile;
     GameObject m_InstanceTarget = null;

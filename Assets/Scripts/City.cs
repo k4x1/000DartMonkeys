@@ -1,14 +1,17 @@
+using TMPro;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class City : MonoBehaviour
 {
     static int MaxHealth = 100;
     public int Health = MaxHealth;
-    public int Doubloons = 0;
+    public int Doubloons = 100;
     public int Wood = 1;
     public int CityLevel = 1;
     public int Round = 1;
@@ -16,26 +19,123 @@ public class City : MonoBehaviour
     public GameObject Turret;
     public GameObject Factory;
     public GameObject Barrack;
+    public int UpgradeCost = 10;
     public static List<GameObject> TowerReferences = new List<GameObject>();
-
+    public float m_fBattleTimerSeconds_max = 1.0f;
+    public float m_fBattleTimerSeconds_current = 0.0f;
+    public TMP_Text DoubloonsDisplay;
+    public TMP_Text WoodDisplay;
+    public TMP_Text CityLevelDisplay;
+    public TMP_Text HealthDisplay;
+    public GameObject grid;
+    int turretY = 11;
+    int barrackY = 11;
+    int factoryY = 11;   
+    int turretX = 15;
+    int barrackX = 10;
+    int factoryX = 5;
     private void Update()
     {
-      
+        DoubloonsDisplay.text = string.Concat("Doubloons: " , Doubloons.ToString());
+        WoodDisplay.text = string.Concat("Wood: " , Wood.ToString());
+        CityLevelDisplay.text = string.Concat("CityLevel: " , CityLevel.ToString());
+        HealthDisplay.text = string.Concat("Health: " , Health.ToString());
+
+
+        TakeDamage();
+        if (Health <= 0)
+        {
+            Die();
+        }
+        if (Input.GetKeyDown(KeyCode.T)&& turretY > -10)
+        {
+            turretY-=2;
+            CreateTower(Turret, new Vector3(transform.position.x + turretX, turretY));
+           
+        }
+        else if (Input.GetKeyDown(KeyCode.T))
+        {
+            turretY = 11;
+            turretX += 3;
+        }
+        if (Input.GetKeyDown(KeyCode.Y)&& factoryY > -10)
+        {
+            factoryY -= 2;
+            UnityEngine.Debug.Log("aaaasfsafd");
+            CreateTower(Factory, new Vector3(transform.position.x + factoryX, factoryY));
+
+        }
+        else if(Input.GetKeyDown(KeyCode.Y))
+        {
+            factoryY = 11;
+            factoryX += 3;
+        }
+        if (Input.GetKeyDown(KeyCode.U)&& barrackY > -10)
+        {
+            barrackY -= 2;
+            CreateTower(Barrack, new Vector3(transform.position.x + barrackX, barrackY));
+           
+        }
+        else if (Input.GetKeyDown(KeyCode.U))
+        {
+            barrackY = 11;
+            barrackX += 3;
+        }
     }
 
+
     void UpgradeCity(){
-        CityLevel++;
+        if (Doubloons >= UpgradeCost || Wood>= UpgradeCost) { 
+            Doubloons -= UpgradeCost; Wood-=UpgradeCost;
+            UpgradeCost *= 2;
+            CityLevel++;
+        }
     }
     void StartRound(){
         Round++;
     }
     void CreateTower(GameObject _tower, Vector3 _pos){
-        TowerNumber++;
-        Instantiate(_tower,_pos,Quaternion.identity);
+        int tPrice = _tower.GetComponent<Tower>().m_Price;
+        if(Doubloons>= tPrice) {
+           Doubloons -= tPrice;
+         TowerNumber++;
+         GameObject tower = Instantiate(_tower,_pos,Quaternion.identity);
+         tower.GetComponent<Tower>().Placed();
+        }
+        //grid.SetActive(true);
         //add tower to tower references
     }
-    void TakeDamage(int _damage){
-        Health -= _damage;
+    void TakeDamage(){
+        GameObject[] enemies;
+        enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        Vector3 pos = transform.position;
+        Vector3 range = new Vector3(2, 2);
+        foreach (GameObject enemy in enemies)
+        {
+            Vector3 enemyPos = enemy.transform.position;
+
+
+            if (enemyPos.x > pos.x - range.x && enemyPos.x < pos.x + range.x)
+            {
+                if (enemyPos.y > pos.y - range.y && enemyPos.y < pos.y + range.y)
+                {
+
+
+                    if (m_fBattleTimerSeconds_current <= 0)
+                    {
+                        Health -= enemy.GetComponent<Balloon>().m_Damage;
+                        enemy.GetComponent<Balloon>().m_Speed = 0 ;
+                        m_fBattleTimerSeconds_current = m_fBattleTimerSeconds_max;
+
+                    }
+                    else
+                    {
+                        m_fBattleTimerSeconds_current -= Time.deltaTime;
+                    }
+                   
+                }
+            }
+        }
     }
     void Die(){
         //restart game

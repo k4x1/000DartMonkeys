@@ -138,7 +138,7 @@ public class Plant : MonoBehaviour
         enemies = GameObject.FindGameObjectsWithTag("Enemy");
         Vector3 pos = transform.position;
         Vector3 range = new Vector3(2, 2);
-        bool EnemyFound = false;
+     
         foreach (GameObject enemy in enemies)
         {
             Vector3 enemyPos = enemy.transform.position;
@@ -150,7 +150,7 @@ public class Plant : MonoBehaviour
                 {
                     enemy.GetComponent<Balloon>().m_Health -= m_iTroopDamage;
                     m_iTroopHealth -= enemy.GetComponent<Balloon>().m_Damage;
-                    EnemyFound = true;
+         
                     if(m_iTroopHealth <= 0)
                     {
                         Destroy(gameObject);
