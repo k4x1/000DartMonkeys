@@ -19,7 +19,7 @@ public class City : MonoBehaviour
     public GameObject Turret;
     public GameObject Factory;
     public GameObject Barrack;
-    public int UpgradeCost = 10;
+    public int UpgradeCost = 20;
     public static List<GameObject> TowerReferences = new List<GameObject>();
     public float m_fBattleTimerSeconds_max = 1.0f;
     public float m_fBattleTimerSeconds_current = 0.0f;
@@ -36,10 +36,10 @@ public class City : MonoBehaviour
     int factoryX = 5;
     private void Update()
     {
-        DoubloonsDisplay.text = string.Concat("Doubloons: " , Doubloons.ToString());
-        WoodDisplay.text = string.Concat("Wood: " , Wood.ToString());
-        CityLevelDisplay.text = string.Concat("CityLevel: " , CityLevel.ToString());
-        HealthDisplay.text = string.Concat("Health: " , Health.ToString());
+        DoubloonsDisplay.text = string.Concat("Doubloons: ", Doubloons.ToString());
+        WoodDisplay.text = string.Concat("Wood: ", Wood.ToString());
+        CityLevelDisplay.text = string.Concat("CityLevel: ", CityLevel.ToString());
+        HealthDisplay.text = string.Concat("Health: ", Health.ToString());
 
 
         TakeDamage();
@@ -47,36 +47,55 @@ public class City : MonoBehaviour
         {
             Die();
         }
-        if (Input.GetKeyDown(KeyCode.T)&& turretY > -10)
+        if (Input.GetKeyDown(KeyCode.T) && turretY > -10)
         {
-            turretY-=2;
+            turretY -= 2;
             CreateTower(Turret, new Vector3(transform.position.x + turretX, turretY));
-           
+
+        } 
+        if (Input.GetKeyDown(KeyCode.P) && Wood >= UpgradeCost&&   Doubloons >= UpgradeCost)
+        {
+            UpgradeCity();
+
         }
         else if (Input.GetKeyDown(KeyCode.T))
         {
             turretY = 11;
             turretX += 3;
         }
-        if (Input.GetKeyDown(KeyCode.Y)&& factoryY > -10)
+        if (Input.GetKeyDown(KeyCode.Y) && factoryY > -10)
         {
             factoryY -= 2;
-            UnityEngine.Debug.Log("aaaasfsafd");
             CreateTower(Factory, new Vector3(transform.position.x + factoryX, factoryY));
 
         }
-        else if(Input.GetKeyDown(KeyCode.Y))
+        else if (Input.GetKeyDown(KeyCode.Y))
         {
             factoryY = 11;
             factoryX += 3;
         }
-        if (Input.GetKeyDown(KeyCode.U)&& barrackY > -10)
+        if (Input.GetKeyDown(KeyCode.U) || Input.GetKeyDown(KeyCode.I) ||Input.GetKeyDown(KeyCode.O) && barrackY > -10)
         {
             barrackY -= 2;
-            CreateTower(Barrack, new Vector3(transform.position.x + barrackX, barrackY));
+
+            GameObject Bar;
+            if (Input.GetKeyDown(KeyCode.U)){
+                Bar = CreateTower(Barrack, new Vector3(transform.position.x + barrackX, barrackY));
+                Bar.GetComponent<Barrack>().Type = global::Barrack.BarrackType.type_potato;
+            } 
+            else if (Input.GetKeyDown(KeyCode.I)){
+                 Bar = CreateTower(Barrack, new Vector3(transform.position.x + barrackX, barrackY));
+                Bar.GetComponent<Barrack>().Type = global::Barrack.BarrackType.type_cucumber;
+            }
+
+            else if(Input.GetKeyDown(KeyCode.O)){
+                 Bar = CreateTower(Barrack, new Vector3(transform.position.x + barrackX, barrackY));
+                Bar.GetComponent<Barrack>().Type = global::Barrack.BarrackType.type_cactus;
+            }
+           
            
         }
-        else if (Input.GetKeyDown(KeyCode.U))
+        else if (Input.GetKeyDown(KeyCode.U) || Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.O))
         {
             barrackY = 11;
             barrackX += 3;
@@ -87,21 +106,23 @@ public class City : MonoBehaviour
     void UpgradeCity(){
         if (Doubloons >= UpgradeCost || Wood>= UpgradeCost) { 
             Doubloons -= UpgradeCost; Wood-=UpgradeCost;
-            UpgradeCost *= 2;
             CityLevel++;
+            Health += 100;
         }
     }
     void StartRound(){
         Round++;
     }
-    void CreateTower(GameObject _tower, Vector3 _pos){
+    GameObject CreateTower(GameObject _tower, Vector3 _pos){
         int tPrice = _tower.GetComponent<Tower>().m_Price;
         if(Doubloons>= tPrice) {
            Doubloons -= tPrice;
          TowerNumber++;
          GameObject tower = Instantiate(_tower,_pos,Quaternion.identity);
          tower.GetComponent<Tower>().Placed();
+            return tower;
         }
+        return _tower;
         //grid.SetActive(true);
         //add tower to tower references
     }

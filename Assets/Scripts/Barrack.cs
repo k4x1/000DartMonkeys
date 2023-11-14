@@ -16,6 +16,7 @@ public class Barrack : Tower
     float m_fDistance = 0.0f;
 
     public void CreatePlantFactory(){
+        //UnityEngine.Debug.Log("asdfsafd");
         switch (Type) {
             case(BarrackType.type_cactus):
                 currentPlant = Cactus;
@@ -40,6 +41,7 @@ public class Barrack : Tower
         m_CityRef = GameObject.FindGameObjectsWithTag("City")[0];
         m_CityClassRef = m_CityRef.GetComponent<City>();
         m_fPlantTimer = m_fProductionRate;
+        CreatePlantFactory();
     }
     private void Update()
     {

@@ -68,7 +68,7 @@ public abstract class PlantUpgrade : IPlantDecorator
 }
 public class DamageUpgrade : PlantUpgrade
 {
-    int Damage = 2;
+    int Damage = 1;
     public override int GetiDamage
     {
         get
@@ -113,13 +113,13 @@ public class Plant : MonoBehaviour
     [SerializeField]
 
     
-   IPlantDecorator m_PlantDecorator = new BasePlant();
+   public IPlantDecorator m_PlantDecorator = new BasePlant();
 
     void Start()
     {
         m_fBattleTimerSeconds_current = m_fBattleTimerSeconds_max;
     }
-    private void Update()
+    protected void Update()
     {
         if (m_fBattleTimerSeconds_current <= 0)
         {
@@ -148,11 +148,14 @@ public class Plant : MonoBehaviour
             {
                 if (enemyPos.y > pos.y - range.y && enemyPos.y < pos.y + range.y)
                 {
+                    //UnityEngine.Debug.Log("aa1131raa");
                     enemy.GetComponent<Balloon>().m_Health -= m_iTroopDamage;
+                    enemy.GetComponent<Balloon>().m_Speed = 0;
                     m_iTroopHealth -= enemy.GetComponent<Balloon>().m_Damage;
          
                     if(m_iTroopHealth <= 0)
                     {
+                        enemy.GetComponent<Balloon>().m_Speed = 2;
                         Destroy(gameObject);
                     }
                 }
