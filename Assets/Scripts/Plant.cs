@@ -56,7 +56,7 @@ public abstract class PlantUpgrade : IPlantDecorator
     {
         get
         {
-            return GetiHealth;
+            return GetiHealth ;
         }
     }
     public virtual float GetfBattleSpeed
